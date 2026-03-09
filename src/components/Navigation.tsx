@@ -18,6 +18,7 @@ const links = [
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState(links[0].href);
 
   useEffect(() => {
     // client-event-listeners: passive scroll listener
@@ -50,21 +51,50 @@ export function Navigation() {
           <span className="font-bold text-xl tracking-tight text-white group-hover:text-accent transition-colors">See Tree</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        {/* Desktop Nav Box */}
+        <div className="hidden md:flex items-center h-[52px] bg-white/[0.03] border border-white/10 rounded-xl pl-4 pr-1.5 backdrop-blur-md shadow-lg relative group/nav">
+          <nav className="flex items-center gap-1 mr-6 h-full relative">
+            {links.map((link) => {
+              const isActive = activeLink === link.href;
+              return (
+                <Link 
+                  key={link.href} 
+                  href={link.href} 
+                  onClick={() => setActiveLink(link.href)}
+                  className="relative h-full flex items-center px-4 text-sm font-medium transition-colors whitespace-nowrap z-10"
+                >
+                  <span className={cn("relative z-10", isActive ? "text-white" : "text-gray-300 hover:text-white")}>
+                    {link.label}
+                  </span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-nav-border"
+                      className="absolute left-0 right-0 -bottom-[1px] h-[1px]"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-80" />
+                      <div className="absolute left-[10%] right-[10%] bottom-0 h-[8px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent blur-[4px]" />
+                    </motion.div>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="hidden md:flex items-center">
-          <Button variant="secondary" size="sm">Start Free</Button>
+          <div className="h-10">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="h-full">
+              <Link
+                href="#get-started"
+                className="flex items-center justify-center h-full px-6 rounded-lg text-sm font-medium text-white bg-gradient-to-b from-white/10 to-transparent border border-white/20 hover:bg-white/15 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
+              >
+                Get Started
+              </Link>
+            </motion.div>
+          </div>
         </div>
 
         {/* Mobile Nav Toggle */}
-        <button 
+        <button
           className="md:hidden p-2 text-gray-300 hover:text-white"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
@@ -81,16 +111,16 @@ export function Navigation() {
           className="md:hidden bg-dark-navy border-b border-white/10 px-6 py-4 flex flex-col gap-4"
         >
           {links.map((link) => (
-            <Link 
-              key={link.href} 
-              href={link.href} 
+            <Link
+              key={link.href}
+              href={link.href}
               className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <Button variant="secondary" className="w-full mt-4">Start Free</Button>
+          <Button variant="secondary" className="w-full mt-4">Get Started</Button>
         </motion.div>
       )}
     </motion.header>
