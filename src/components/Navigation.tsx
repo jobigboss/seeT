@@ -57,9 +57,9 @@ export function Navigation() {
             {links.map((link) => {
               const isActive = activeLink === link.href;
               return (
-                <Link 
-                  key={link.href} 
-                  href={link.href} 
+                <Link
+                  key={link.href}
+                  href={link.href}
                   onClick={() => setActiveLink(link.href)}
                   className="relative h-full flex items-center px-4 text-sm font-medium transition-colors whitespace-nowrap z-10"
                 >
@@ -67,14 +67,56 @@ export function Navigation() {
                     {link.label}
                   </span>
                   {isActive && (
-                    <motion.div
-                      layoutId="active-nav-border"
-                      className="absolute left-0 right-0 -bottom-[1px] h-[1px]"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-80" />
-                      <div className="absolute left-[10%] right-[10%] bottom-0 h-[8px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent blur-[4px]" />
-                    </motion.div>
+                    <>
+                      <motion.div
+                        layoutId="active-nav-border"
+                        className="absolute left-0 right-0 -bottom-[1px] h-[1px]"
+                        transition={{
+                          type: "spring",
+                          stiffness: 80,
+                          damping: 25,
+                          mass: 1.2,
+                          restDelta: 0.001 // Smooth, floating stop
+                        }}
+                      >
+                        <motion.div
+                          initial={{ opacity: 0, scaleX: 0.5 }}
+                          animate={{ opacity: 1, scaleX: 1 }}
+                          transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-80"
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: -2 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.7, ease: "easeOut" }}
+                          className="absolute left-[10%] right-[10%] bottom-0 h-[8px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent blur-[4px]"
+                        />
+                      </motion.div>
+
+                      {/* The Feather Drop (ขนนกที่ร่วงหล่น) */}
+                      <motion.div
+                        key={`feather-${link.href}`}
+                        initial={{ opacity: 0, y: 0, x: 0, rotate: -20 }}
+                        animate={{
+                          opacity: [0, 0.8, 0.8, 0],
+                          y: [0, 15, 30, 45],
+                          x: [0, 10, -8, 12],
+                          rotate: [-20, 20, -15, 25]
+                        }}
+                        transition={{
+                          duration: 3,
+                          ease: "easeInOut",
+                          delay: 0.15
+                        }}
+                        className="absolute left-[40%] bottom-0 pointer-events-none -ml-2 text-cyan-200/60"
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-sm">
+                          <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                          <line x1="16" y1="8" x2="2" y2="22" />
+                          <line x1="17.5" y1="15" x2="9" y2="15" />
+                        </svg>
+                      </motion.div>
+                    </>
                   )}
                 </Link>
               );
